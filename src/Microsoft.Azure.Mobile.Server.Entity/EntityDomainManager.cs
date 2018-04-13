@@ -93,7 +93,7 @@ namespace Microsoft.Azure.Mobile.Server
             return TableUtils.ApplyDeletedFilter(query, this.IncludeDeleted);
         }
 
-        public override SingleResult<TData> Lookup(string id)
+        public override SingleResult<TData> Lookup(Guid id)
         {
             return this.Lookup(id, this.IncludeDeleted);
         }
@@ -103,7 +103,7 @@ namespace Microsoft.Azure.Mobile.Server
             throw TableUtils.GetQueryableOnlyQueryException(this.GetType(), "Query");
         }
 
-        public override Task<SingleResult<TData>> LookupAsync(string id)
+        public override Task<SingleResult<TData>> LookupAsync(Guid id)
         {
             throw TableUtils.GetQueryableOnlyLookupException(this.GetType(), "Lookup");
         }
@@ -117,7 +117,7 @@ namespace Microsoft.Azure.Mobile.Server
 
             if (data.Id == null)
             {
-                data.Id = Guid.NewGuid().ToString("N");
+                data.Id = Guid.NewGuid();//.ToString("N");
             }
 
             this.Context.Set<TData>().Add(data);
@@ -127,19 +127,19 @@ namespace Microsoft.Azure.Mobile.Server
             return data;
         }
 
-        public async override Task<TData> UpdateAsync(string id, Delta<TData> patch)
+        public async override Task<TData> UpdateAsync(Guid id, Delta<TData> patch)
         {
             return await this.UpdateAsync(id, patch, this.IncludeDeleted);
         }
 
-        public override Task<TData> UndeleteAsync(string id, Delta<TData> patch)
+        public override Task<TData> UndeleteAsync(Guid id, Delta<TData> patch)
         {
             patch = patch ?? new Delta<TData>();
             patch.TrySetPropertyValue(TableUtils.DeletedPropertyName, false);
             return this.UpdateAsync(id, patch, true);
         }
 
-        public async override Task<TData> ReplaceAsync(string id, TData data)
+        public async override Task<TData> ReplaceAsync(Guid id, TData data)
         {
             if (id == null)
             {
@@ -171,7 +171,7 @@ namespace Microsoft.Azure.Mobile.Server
             return data;
         }
 
-        public async override Task<bool> DeleteAsync(string id)
+        public async override Task<bool> DeleteAsync(Guid id)
         {
             if (id == null)
             {
@@ -241,7 +241,7 @@ namespace Microsoft.Azure.Mobile.Server
         /// updated entity. If not then throw an exception as ids can't be modified.
         /// </summary>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Caller owns response object.")]
-        private void VerifyUpdatedKey(string id, TData data)
+        private void VerifyUpdatedKey(Guid id, TData data)
         {
             // Verify that keys match after patch
             if (data == null || data.Id != id)
@@ -252,7 +252,7 @@ namespace Microsoft.Azure.Mobile.Server
             }
         }
 
-        private async Task<TData> UpdateAsync(string id, Delta<TData> patch, bool includeDeleted)
+        private async Task<TData> UpdateAsync(Guid id, Delta<TData> patch, bool includeDeleted)
         {
             if (id == null)
             {
@@ -286,7 +286,7 @@ namespace Microsoft.Azure.Mobile.Server
             return current;
         }
 
-        private SingleResult<TData> Lookup(string id, bool includeDeleted)
+        private SingleResult<TData> Lookup(Guid id, bool includeDeleted)
         {
             if (id == null)
             {

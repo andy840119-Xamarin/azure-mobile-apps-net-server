@@ -18,7 +18,7 @@ namespace Microsoft.Azure.Mobile.Server.Tables
         /// <summary>
         /// Gets or sets the unique ID for this entity.
         /// </summary>
-        string Id { get; set; }
+        Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the unique version identifier which is updated every time the entity is updated.

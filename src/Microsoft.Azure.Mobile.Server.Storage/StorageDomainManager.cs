@@ -317,13 +317,13 @@ namespace Microsoft.Azure.Mobile.Server
             return model;
         }
 
-        public override async Task<SingleResult<TData>> LookupAsync(string id)
+        public override async Task<SingleResult<TData>> LookupAsync(Guid id)
         {
             TData data = await this.LookupItemAsync(id);
             return SingleResult<TData>.Create(new TData[] { data }.AsQueryable<TData>());
         }
 
-        private async Task<TData> LookupItemAsync(string id)
+        private async Task<TData> LookupItemAsync(Guid id)
         {
             if (id == null)
             {
@@ -340,7 +340,7 @@ namespace Microsoft.Azure.Mobile.Server
             throw TableUtils.GetNoQueryableQueryException(this.GetType(), "QueryAsync");
         }
 
-        public override SingleResult<TData> Lookup(string id)
+        public override SingleResult<TData> Lookup(Guid id)
         {
             throw TableUtils.GetNoQueryableLookupException(this.GetType(), "LookupAsync");
         }
@@ -358,19 +358,19 @@ namespace Microsoft.Azure.Mobile.Server
             return await this.ExecuteOperationAsync(insertOperation, OperationType.Insert);
         }
 
-        public override Task<TData> UpdateAsync(string id, Delta<TData> patch)
+        public override Task<TData> UpdateAsync(Guid id, Delta<TData> patch)
         {
             return this.UpdateAsync(id, patch, this.IncludeDeleted, OperationType.Update);
         }
 
-        public override Task<TData> UndeleteAsync(string id, Delta<TData> patch)
+        public override Task<TData> UndeleteAsync(Guid id, Delta<TData> patch)
         {
             patch = patch ?? new Delta<TData>();
             patch.TrySetPropertyValue(TableUtils.DeletedPropertyName, false);
             return this.UpdateAsync(id, patch, true, OperationType.Undelete);
         }
 
-        public override async Task<TData> ReplaceAsync(string id, TData data)
+        public override async Task<TData> ReplaceAsync(Guid id, TData data)
         {
             if (id == null)
             {
@@ -390,7 +390,7 @@ namespace Microsoft.Azure.Mobile.Server
             return await this.ExecuteOperationAsync(replace, OperationType.Replace);
         }
 
-        public override async Task<bool> DeleteAsync(string id)
+        public override async Task<bool> DeleteAsync(Guid id)
         {
             if (id == null)
             {
@@ -440,7 +440,7 @@ namespace Microsoft.Azure.Mobile.Server
         }
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Response is disposed by caller.")]
-        protected virtual CompositeTableKey GetStorageKey(string id)
+        protected virtual CompositeTableKey GetStorageKey(Guid id)
         {
             if (id == null)
             {
@@ -448,7 +448,7 @@ namespace Microsoft.Azure.Mobile.Server
             }
 
             CompositeTableKey compositeKey;
-            if (!CompositeTableKey.TryParse(id, out compositeKey) || compositeKey.Segments.Count != 2)
+            if (!CompositeTableKey.TryParse(id.ToString(), out compositeKey) || compositeKey.Segments.Count != 2)
             {
                 // We have either invalid, no keys, or too many keys
                 string error = ASResources.StorageTable_InvalidKey.FormatForUser(id);
@@ -458,7 +458,7 @@ namespace Microsoft.Azure.Mobile.Server
             return compositeKey;
         }
 
-        private async Task<TData> UpdateAsync(string id, Delta<TData> patch, bool includeDeleted, OperationType operationType)
+        private async Task<TData> UpdateAsync(Guid id, Delta<TData> patch, bool includeDeleted, OperationType operationType)
         {
             if (id == null)
             {

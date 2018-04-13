@@ -125,7 +125,7 @@ namespace Microsoft.Azure.Mobile.Server
         /// </summary>
         /// <returns>An <see cref="SingleResult{TData}"/> returned by the <see cref="IDomainManager{TData}"/>.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Caller disposes response.")]
-        protected virtual SingleResult<TData> Lookup(string id)
+        protected virtual SingleResult<TData> Lookup(Guid id)
         {
             try
             {
@@ -149,7 +149,7 @@ namespace Microsoft.Azure.Mobile.Server
         /// </summary>
         /// <returns>An <see cref="SingleResult{TData}"/> returned by the <see cref="IDomainManager{TData}"/>.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Caller disposes response.")]
-        protected virtual async Task<SingleResult<TData>> LookupAsync(string id)
+        protected virtual async Task<SingleResult<TData>> LookupAsync(Guid id)
         {
             try
             {
@@ -206,7 +206,7 @@ namespace Microsoft.Azure.Mobile.Server
         /// exceptions thrown by the <see cref="IDomainManager{TData}"/> and maps them into appropriate HTTP responses.
         /// </summary>
         /// <returns>A <see cref="Task{TData}"/> representing the update operation executed by the the <see cref="IDomainManager{TData}"/>.</returns>
-        protected virtual Task<TData> UpdateAsync(string id, Delta<TData> patch)
+        protected virtual Task<TData> UpdateAsync(Guid id, Delta<TData> patch)
         {
             return this.PatchAsync(id, patch, (i, p) => this.DomainManager.UpdateAsync(i, p));
         }
@@ -216,7 +216,7 @@ namespace Microsoft.Azure.Mobile.Server
         /// exceptions thrown by the <see cref="IDomainManager{TData}"/> and maps them into appropriate HTTP responses.
         /// </summary>
         /// <returns>A <see cref="Task{TData}"/> representing the update operation executed by the the <see cref="IDomainManager{TData}"/>.</returns>
-        protected virtual Task<TData> UndeleteAsync(string id)
+        protected virtual Task<TData> UndeleteAsync(Guid id)
         {
             return this.UndeleteAsync(id, new Delta<TData>());
         }
@@ -227,7 +227,7 @@ namespace Microsoft.Azure.Mobile.Server
         /// </summary>
         /// <returns>A <see cref="Task{TData}"/> representing the undelete operation executed by the the <see cref="IDomainManager{TData}"/>.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Response is disposed in the response path.")]
-        protected virtual Task<TData> UndeleteAsync(string id, Delta<TData> patch)
+        protected virtual Task<TData> UndeleteAsync(Guid id, Delta<TData> patch)
         {
             var manager = this.DomainManager as DomainManager<TData>;
             if (manager == null)
@@ -249,7 +249,7 @@ namespace Microsoft.Azure.Mobile.Server
         /// </summary>
         /// <returns>A <see cref="Task{TData}"/> representing the replace operation executed by the the <see cref="IDomainManager{TData}"/>.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Response is disposed in the response path.")]
-        protected async virtual Task<TData> ReplaceAsync(string id, TData item)
+        protected async virtual Task<TData> ReplaceAsync(Guid id, TData item)
         {
             if (item == null)
             {
@@ -290,7 +290,7 @@ namespace Microsoft.Azure.Mobile.Server
         /// </summary>
         /// <returns>A <see cref="Task{TData}"/> representing the delete operation executed by the the <see cref="IDomainManager{TData}"/>.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Response is disposed in the response path.")]
-        protected virtual async Task DeleteAsync(string id)
+        protected virtual async Task DeleteAsync(Guid id)
         {
             bool result = false;
             try
@@ -315,7 +315,7 @@ namespace Microsoft.Azure.Mobile.Server
         }
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Response is disposed in the response path.")]
-        private async Task<TData> PatchAsync(string id, Delta<TData> patch, Func<string, Delta<TData>, Task<TData>> patchAction)
+        private async Task<TData> PatchAsync(Guid id, Delta<TData> patch, Func<Guid, Delta<TData>, Task<TData>> patchAction)
         {
             if (patch == null)
             {

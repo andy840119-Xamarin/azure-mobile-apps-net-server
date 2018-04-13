@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // ---------------------------------------------------------------------------- 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ namespace Microsoft.Azure.Mobile.Server.Tables
         /// See also <see cref="M:Query"/> which is the companion method for creating an <see cref="IQueryable{T}"/> representing multiple items.
         /// </remarks>
         /// <returns>A <see cref="SingleResult{T}"/> containing the <see cref="IQueryable{T}"/> which has not yet been executed.</returns>
-        SingleResult<TData> Lookup(string id);
+        SingleResult<TData> Lookup(Guid id);
 
         /// <summary>
         /// Executes the provided <paramref name="query"/> against a store.
@@ -65,7 +66,7 @@ namespace Microsoft.Azure.Mobile.Server.Tables
         /// </remarks>
         /// <returns>A <see cref="SingleResult{T}"/> representing the result of the lookup. A <see cref="SingleResult{T}"/> represents an 
         /// <see cref="IQueryable"/> containing zero or one entities. This allows it to be composed with further querying such as <c>$select</c>.</returns>
-        Task<SingleResult<TData>> LookupAsync(string id);
+        Task<SingleResult<TData>> LookupAsync(Guid id);
 
         /// <summary>
         /// Inserts an item to the backend store.
@@ -82,7 +83,7 @@ namespace Microsoft.Azure.Mobile.Server.Tables
         /// <param name="id">The id of the item to patch.</param>
         /// <param name="patch">The patch to apply.</param>
         /// <returns>The patched item.</returns>
-        Task<TData> UpdateAsync(string id, Delta<TData> patch);
+        Task<TData> UpdateAsync(Guid id, Delta<TData> patch);
 
         /// <summary>
         /// Completely replaces an existing item.
@@ -90,13 +91,13 @@ namespace Microsoft.Azure.Mobile.Server.Tables
         /// <param name="id">The id of the item to replace.</param>
         /// <param name="data">The replacement</param>       
         /// <returns>The replaced item</returns>
-        Task<TData> ReplaceAsync(string id, TData data);
+        Task<TData> ReplaceAsync(Guid id, TData data);
 
         /// <summary>
         /// Deletes an existing item
         /// </summary>
         /// <param name="id">The id of the item to delete.</param>
         /// <returns><c>true</c> if item was deleted; otherwise <c>false</c></returns>
-        Task<bool> DeleteAsync(string id);
+        Task<bool> DeleteAsync(Guid id);
     }
 }
